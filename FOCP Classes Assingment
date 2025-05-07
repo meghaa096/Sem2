@@ -1,0 +1,110 @@
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+
+using namespace std;
+
+class Student {
+private:
+    string name;
+    int rollNumber;
+    float cgpa;
+    vector<string> courses;
+
+public:
+    // Default constructor
+    Student() : name("Unknown"), rollNumber(0), cgpa(0.0) {}
+
+    // Parameterized constructor
+    Student(string n, int roll, float c) : name(n), rollNumber(roll), cgpa(c) {}
+
+    // Copy constructor
+    Student(const Student &s) : name(s.name), rollNumber(s.rollNumber), cgpa(s.cgpa), courses(s.courses) {}
+
+    // Destructor
+    ~Student() {
+        cout << "Destructor called for Student: " << name << endl;
+    }
+
+    // Method to add courses
+    void addCourse(string course) {
+        courses.push_back(course);
+    }
+
+    // Method to update CGPA
+    void updateCGPA(float newCGPA) {
+        if (newCGPA >= 0.0 && newCGPA <= 10.0) {
+            cgpa = newCGPA;
+        } else {
+            cout << "Invalid CGPA range!" << endl;
+        }
+    }
+
+    // Method to display student details
+    void displayInfo() const {
+        cout << "Name: " << name << ", Roll No: " << rollNumber << ", CGPA: " << cgpa << endl;
+        cout << "Courses: ";
+        for (const auto& course : courses) {
+            cout << course << " ";
+        }
+        cout << endl;
+    }
+
+    // Getter for roll number (needed for StudentManagementSystem)
+    int getRollNumber() const {
+        return rollNumber;
+    }
+};
+
+class StudentManagementSystem {
+private:
+    unordered_map<int, Student> students;
+
+public:
+    // Method to add a new student
+    void addStudent(const Student &s) {
+        students[s.getRollNumber()] = s;
+    }
+
+    // Method to search for a student
+    void searchStudent(int roll) {
+        if (students.find(roll) != students.end()) {
+            students[roll].displayInfo();
+        } else {
+            cout << "Student not found!" << endl;
+        }
+    }
+
+    // Method to display all student records
+    void displayAllStudents() {
+        for (const auto& [roll, student] : students) {
+            student.displayInfo();
+        }
+    }
+};
+
+int main() {
+    StudentManagementSystem sms;
+
+    // Create students
+    Student s1("Megha", 101, 8.7);
+    Student s2("Aryan", 102, 9.1);
+
+    // Add students to the system
+    sms.addStudent(s1);
+    sms.addStudent(s2);
+
+    // Adding courses
+    s1.addCourse("Chemistry");
+    s1.addCourse("Physics");
+    s2.addCourse("Mathematics");
+
+    // Update CGPA
+    s1.updateCGPA(9.0);
+
+    // Retrieve and display student records
+    sms.searchStudent(101);
+    sms.displayAllStudents();
+
+    return 0;
+}
